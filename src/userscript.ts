@@ -9,8 +9,8 @@
 // @include      https://www.novelupdates.com/latest-series/*
 // @include      https://www.novelupdates.com/viewlist/*
 // @match        https://www.novelupdates.com/
-// @version      1.2.2
-// @description  Filters novel update results by country
+// @version      1.3.0
+// @description  Filters novel update results by country with dark mode support
 // @run-at       document-end
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -39,6 +39,7 @@
         Vietnam: 'orgvn',
     };
 
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const isMobile = /android|iphone/i.test(navigator.userAgent);
     const desktopHome = document.querySelector('.l-content table#myTable');
     const mobileHome = document.querySelector('.tbl_m_release');
@@ -59,14 +60,16 @@
     // Create filter area
     const filterArea = document.createElement('div');
     filterArea.style.margin = '25px 0';
-    filterArea.style.backgroundColor = '#DAE8EC';
+    filterArea.style.backgroundColor = isDarkMode ? '#333' : '#DAE8EC';
     filterArea.style.borderRadius = '10px';
-    filterArea.style.border = '2px solid #B8CB99';
+    filterArea.style.border = isDarkMode ? '2px solid #bbb' : '2px solid #B8CB99';
     filterArea.style.padding = '10px';
+    filterArea.style.color = isDarkMode ? '#fff' : '#000';
 
     const filterLabel = document.createElement('p');
     filterLabel.innerHTML = '<b>Blocklist :</b>';
     filterLabel.style.marginBottom = '0';
+    filterLabel.style.color = isDarkMode ? '#ddd' : '#000';
 
     const selections = document.createElement('div');
     selections.style.display = 'flex';
@@ -99,7 +102,9 @@
         console.log(`Toggling ${country}:`, newState);
 
         setDisplay(className, newState);
-        this.style.backgroundColor = newState ? 'white' : '#F9F871';
+        this.style.backgroundColor = newState 
+            ? (isDarkMode ? '#444' : 'white') 
+            : (isDarkMode ? '#665500' : '#F9F871');
 
         GM_setValue(country, newState);
     }
@@ -112,18 +117,21 @@
 
         name.innerText = country;
         name.style.marginBottom = '0';
+        name.style.color = isDarkMode ? '#fff' : '#000';
 
         item.appendChild(name);
         item.style.display = 'flex';
         item.style.alignItems = 'center';
         item.style.justifyContent = 'center';
         item.style.minWidth = '80px';
-        item.style.backgroundColor = show ? 'white' : '#F9F871';
+        item.style.backgroundColor = show 
+            ? (isDarkMode ? '#444' : 'white') 
+            : (isDarkMode ? '#665500' : '#F9F871');
         item.style.padding = '5px';
         item.style.margin = '5px';
         item.style.cursor = 'pointer';
         item.style.borderRadius = '10px';
-        item.style.border = '2px solid #7c5262';
+        item.style.border = isDarkMode ? '2px solid #bbb' : '2px solid #7c5262';
         item.id = country;
         item.addEventListener('click', toggleFilter);
 
